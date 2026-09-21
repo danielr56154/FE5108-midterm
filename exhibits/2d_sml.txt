@@ -1,0 +1,6 @@
+Exhibit 2d — fitted SML vs theory (annualized)
+market 1305.T  (Daiwa full-TOPIX ETF)
+30 names, 120 months  2016-10 … 2026-09
+
+theory     intercept 0.000   slope 0.144
+fitted     intercept 0.011   slope 0.210

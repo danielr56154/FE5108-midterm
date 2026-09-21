@@ -1,0 +1,16 @@
+Exhibit 3c — which Stage-2 leftovers die?
+30 names, 118 months  2016-10 … 2026-07
+
+CAPM               |t(α)| > 2: 3 of 30   GRS F(30, 87) = 1.44   p ≈ 0.096
++ SMB HML          |t(α)| > 2: 3 of 30   GRS F(30, 85) = 2.12   p ≈ 0.004
++ SMB HML WML      |t(α)| > 2: 6 of 30   GRS F(30, 84) = 2.09   p ≈ 0.004
+
+Tokio Marine: CAPM 0.154 (t=2.44);  SMB+HML 0.115 (t=1.91);  full 0.115 (t=1.89)
+Itochu: CAPM 0.125 (t=2.39);  SMB+HML 0.102 (t=1.98);  full 0.123 (t=2.42)
+Advantest: CAPM 0.337 (t=2.10);  SMB+HML 0.397 (t=2.66);  full 0.334 (t=2.26)
+
+Quiet after SMB+HML:  Itochu (8001), Tokio Marine (8766)
+Still loud in full:   Advantest (6857), Itochu (8001)
+Newly loud after:     HOYA (7741), Hitachi (6501), Sony (6758), Tokyo Electron (8035)
+
+Joint GRS p ≈ 0.096 → 0.004 (SMB+HML) → 0.004 (full). Value-like leftovers shrink; growth names (semiconductors, HOYA, Sony, Hitachi) get louder because Japan HML paid a premium in this sample. Homemade WML does not repair the joint test.

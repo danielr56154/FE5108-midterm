@@ -1,0 +1,37 @@
+Exhibit 2a — CAPM  Ri−Rf = α + β (RM−Rf) + ε
+market 1305.T  (Daiwa full-TOPIX ETF)
+30 names, 120 months  2016-10 … 2026-09
+α annualized; t(α) and R² from the monthly regression
+
+                       name   beta  alpha  t_alpha     r2
+ticker                                                   
+8001.T               Itochu  0.946  0.136    2.607  0.400
+8766.T         Tokio Marine  0.620  0.154    2.447  0.166
+6857.T            Advantest  1.950  0.326    2.067  0.238
+8031.T               Mitsui  0.990  0.121    1.850  0.317
+6501.T              Hitachi  1.272  0.120    1.666  0.388
+8316.T                 SMFG  1.106  0.091    1.554  0.424
+8411.T               Mizuho  0.959  0.087    1.529  0.366
+9433.T                 KDDI  0.208  0.083    1.482  0.027
+8306.T                 MUFG  1.165  0.098    1.482  0.390
+8035.T       Tokyo Electron  1.576  0.181    1.468  0.251
+6758.T                 Sony  0.748  0.102    1.365  0.171
+8058.T      Mitsubishi Corp  1.128  0.094    1.330  0.341
+7011.T                  MHI  1.207  0.126    1.303  0.241
+9432.T                  NTT  0.312  0.063    1.271  0.075
+7741.T                 HOYA  0.839  0.092    1.230  0.203
+6098.T              Recruit  1.387  0.132    1.190  0.241
+7974.T             Nintendo  0.510  0.108    1.135  0.055
+7267.T                Honda  1.220 -0.055   -0.949  0.475
+2914.T        Japan Tobacco  0.559  0.041    0.769  0.184
+9983.T       Fast Retailing  1.228  0.060    0.728  0.308
+9984.T       SoftBank Group  1.539  0.100    0.687  0.186
+4568.T       Daiichi Sankyo  0.995  0.061    0.556  0.144
+4502.T               Takeda  0.768 -0.027   -0.440  0.240
+6367.T               Daikin  0.999 -0.022   -0.315  0.293
+4063.T            Shin-Etsu  1.239  0.020    0.275  0.377
+6861.T              Keyence  1.136  0.018    0.256  0.341
+6503.T  Mitsubishi Electric  1.454 -0.015   -0.256  0.562
+3382.T            Seven & i  0.359  0.014    0.216  0.056
+7203.T               Toyota  1.107 -0.008   -0.131  0.406
+4689.T           LY (Yahoo)  0.571  0.013    0.125  0.058

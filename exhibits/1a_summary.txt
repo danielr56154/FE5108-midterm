@@ -1,0 +1,35 @@
+Exhibit 1a — annualized mean, vol, Sharpe (yen call money)
+30 names, 120 months  2016-10 … 2026-09
+
+                       name   mean    vol  sharpe
+ticker                                           
+8001.T               Itochu  0.273  0.203   1.340
+8766.T         Tokio Marine  0.244  0.207   1.173
+6857.T            Advantest  0.607  0.544   1.115
+8031.T               Mitsui  0.265  0.239   1.103
+6501.T              Hitachi  0.304  0.278   1.092
+8316.T                 SMFG  0.251  0.231   1.080
+8306.T                 MUFG  0.266  0.254   1.045
+8411.T               Mizuho  0.226  0.216   1.044
+8058.T      Mitsubishi Corp  0.257  0.263   0.976
+8035.T       Tokyo Electron  0.408  0.428   0.952
+7011.T                  MHI  0.301  0.334   0.896
+6098.T              Recruit  0.333  0.385   0.863
+6758.T                 Sony  0.210  0.246   0.851
+7741.T                 HOYA  0.214  0.253   0.841
+9983.T       Fast Retailing  0.238  0.301   0.788
+6503.T  Mitsubishi Electric  0.195  0.264   0.737
+4063.T            Shin-Etsu  0.199  0.275   0.722
+9432.T                  NTT  0.109  0.155   0.695
+6861.T              Keyence  0.183  0.265   0.686
+2914.T        Japan Tobacco  0.122  0.177   0.684
+9984.T       SoftBank Group  0.322  0.485   0.662
+9433.T                 KDDI  0.114  0.172   0.660
+7203.T               Toyota  0.152  0.236   0.641
+7974.T             Nintendo  0.182  0.295   0.615
+4568.T       Daiichi Sankyo  0.205  0.357   0.572
+7267.T                Honda  0.121  0.241   0.500
+6367.T               Daikin  0.123  0.251   0.485
+4502.T               Takeda  0.084  0.213   0.391
+3382.T            Seven & i  0.067  0.207   0.319
+4689.T           LY (Yahoo)  0.096  0.321   0.296

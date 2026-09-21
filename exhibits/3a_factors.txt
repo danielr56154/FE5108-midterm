@@ -1,0 +1,9 @@
+Exhibit 3a — factor construction
+30 names, 118 months  2016-10 … 2026-07
+sort universe 78 names  (Core 30 + 48 extras)
+
+SMB. Small minus big. Each June, Japanese stocks are independently sorted on size (big = top 90% of market cap, small = bottom 10%) and book-to-market (30th/70th percentiles of the big stocks). That 2×3 produces six value-weighted books. SMB is the average of the three small books minus the average of the three big books, held until the next June. Here it is the size factor in the monthly excess-return regression of each of the 30 Core 30 names.
+
+HML. High minus low. Same six books: the average of the two high B/M portfolios minus the average of the two low B/M portfolios. Here it is the value factor on those same 30 names, alongside SMB and TOPIX.
+
+WML. Winners minus losers. Each month the 78-name sort list (the 30 test names plus 48 other TSE names) is ranked on the 12–1 return — the product of monthly returns from t−12 through t−2, skipping t−1. Equal-weight top 30% minus equal-weight bottom 30%, held one month. Here that yen spread is the momentum factor in the same 30 regressions.
