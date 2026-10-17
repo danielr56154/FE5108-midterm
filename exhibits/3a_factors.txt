@@ -7,3 +7,19 @@ SMB. Small minus big. Each June, Japanese stocks are independently sorted on siz
 HML. High minus low. Same six books: the average of the two high B/M portfolios minus the average of the two low B/M portfolios. Here it is the value factor on those same 30 names, alongside SMB and TOPIX.
 
 WML. Winners minus losers. Each month the 78-name sort list (the 30 test names plus 48 other TSE names) is ranked on the 12–1 return — the product of monthly returns from t−12 through t−2, skipping t−1. Equal-weight top 30% minus equal-weight bottom 30%, held one month. Here that yen spread is the momentum factor in the same 30 regressions.
+
+Factor summary (mean and vol annualized; mkt = TOPIX excess; smb/hml from French in USD; wml homemade in JPY)
+
+      mean    vol  t_mean
+mkt  0.144  0.137   3.309
+smb -0.023  0.067  -1.073
+hml  0.069  0.128   1.683
+wml  0.062  0.136   1.431
+
+Correlations
+
+      mkt   smb   hml   wml
+mkt  1.00 -0.11 -0.04 -0.01
+smb -0.11  1.00 -0.30 -0.01
+hml -0.04 -0.30  1.00 -0.22
+wml -0.01 -0.01 -0.22  1.00
