@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from scipy.optimize import minimize
 
 import config as C
 
@@ -82,6 +83,133 @@ def tangency(rets, rf) -> pd.Series:
     mu_e = rets.sub(rf, axis=0).mean().values
     w = np.linalg.solve(rets.cov().values, mu_e)
     return pd.Series(w / w.sum(), index=rets.columns, name="tangency")
+
+
+def long_only(rets, rf) -> pd.Series:
+    """Max-Sharpe with w >= 0: min y'Σy s.t. μe'y = 1, y >= 0, then w = y / Σy."""
+    mu_e = rets.sub(rf, axis=0).mean().values * 12
+    S = rets.cov().values * 12
+    n = len(mu_e)
+    y0 = np.where(mu_e > 0, 1.0, 0.0)
+    y0 /= mu_e @ y0
+    res = minimize(lambda y: y @ S @ y, y0, jac=lambda y: 2 * S @ y,
+                   bounds=[(0, None)] * n, method="SLSQP",
+                   constraints=[{"type": "eq", "fun": lambda y: mu_e @ y - 1,
+                                 "jac": lambda y: mu_e}],
+                   options={"ftol": 1e-12, "maxiter": 1000})
+    if not res.success:
+        raise RuntimeError(f"long-only tangency: {res.message}")
+    w = np.clip(res.x, 0, None)
+    return pd.Series(w / w.sum(), index=rets.columns, name="long_only")
+
+
+def shrunk(rets, rf):
+    """Tangency on Bayes-Stein μ (Jorion 1986) and Ledoit-Wolf (2004) Σ.
+
+    Returns weights, LW intensity δ (weight on the scaled-identity target)
+    and Bayes-Stein intensity φ (weight on the minimum-variance mean).
+    """
+    X = rets.sub(rf, axis=0).values
+    T, N = X.shape
+    mu = X.mean(axis=0)
+    Xc = X - mu
+
+    S_ml = Xc.T @ Xc / T
+    F = np.trace(S_ml) / N * np.eye(N)
+    d2 = np.sum((S_ml - F) ** 2) / N
+    b2 = sum(np.sum((np.outer(x, x) - S_ml) ** 2) for x in Xc) / N / T**2
+    delta = min(b2, d2) / d2
+    sigma = delta * F + (1 - delta) * S_ml
+
+    S_j = Xc.T @ Xc / (T - N - 2)
+    Si = np.linalg.inv(S_j)
+    one = np.ones(N)
+    mu0 = one @ Si @ mu / (one @ Si @ one)
+    d = mu - mu0
+    phi = (N + 2) / ((N + 2) + T * d @ Si @ d)
+    mu_bs = (1 - phi) * mu + phi * mu0
+
+    w = np.linalg.solve(sigma, mu_bs)
+    return pd.Series(w / w.sum(), index=rets.columns, name="shrunk"), delta, phi
+
+
+def oos(rets, rf, w_val, window=60) -> pd.DataFrame:
+    """Rolling out-of-sample test: estimate on the trailing window, hold one month."""
+    rules = {
+        "Value (today's caps)": lambda r, f: w_val,
+        "Equal 1/N": lambda r, f: pd.Series(1 / r.shape[1], index=r.columns),
+        "Tangency": tangency,
+        "Long-only tangency": long_only,
+        "Shrunk tangency": lambda r, f: shrunk(r, f)[0],
+    }
+    rows = {}
+    for name, rule in rules.items():
+        port, gross, turn, prev = [], [], [], None
+        for t in range(window, len(rets)):
+            w = rule(rets.iloc[t - window:t], rf.iloc[t - window:t])
+            w = w.reindex(rets.columns).values
+            port.append(rets.iloc[t].values @ w - rf.iloc[t])
+            gross.append(np.abs(w).sum())
+            if prev is not None:
+                turn.append(np.abs(w - prev).sum())
+            prev = w
+        p = np.array(port)
+        rows[name] = {
+            "mean_ex": p.mean() * 12,
+            "vol": p.std(ddof=1) * np.sqrt(12),
+            "sharpe": p.mean() / p.std(ddof=1) * np.sqrt(12),
+            "worst_month": p.min(),
+            "avg_gross": np.mean(gross),
+            "max_gross": np.max(gross),
+            "avg_turnover": np.mean(turn),
+        }
+    return pd.DataFrame(rows).T
+
+
+def book_stats(books, rets, rf) -> pd.DataFrame:
+    """In-sample Sharpe, concentration and half-sample stability of each book."""
+    excess = rets.sub(rf, axis=0)
+    half = len(rets) // 2
+    rows = {}
+    for name, (w, rule) in books.items():
+        p = excess.values @ w.reindex(rets.columns).values
+        if rule is None:
+            corr = np.nan
+        else:
+            a = rule(rets.iloc[:half], rf.iloc[:half])
+            b = rule(rets.iloc[half:], rf.iloc[half:])
+            corr = float(a.corr(b))
+        rows[name] = {
+            "sharpe_in": p.mean() / p.std(ddof=1) * np.sqrt(12),
+            "gross": w.abs().sum(),
+            "max_w": w.max(),
+            "min_w": w.min(),
+            "n_short": int((w < -1e-6).sum()),
+            "n_held": int((w.abs() > 1e-3).sum()),
+            "half_corr": corr,
+        }
+    return pd.DataFrame(rows).T
+
+
+def plot_1d(books, path):
+    w_val = books["Value"]
+    order = w_val.sort_values(ascending=True).index
+    labels = [f"{C.NAMES[t]}  ({t.replace('.T', '')})" for t in order]
+    names = ["Tangency", "Shrunk tangency", "Long-only tangency", "Value"]
+    colors = ["#BBBBBB", "#4C78A8", "#54A24B", "#F58518"]
+
+    fig, ax = plt.subplots(figsize=(9.5, 12.5))
+    y = np.arange(len(order))
+    h = 0.2
+    for k, (n, c) in enumerate(zip(names, colors)):
+        ax.barh(y + (k - 1.5) * h, books[n].reindex(order).values, h, label=n, color=c)
+    ax.set_yticks(y, labels, fontsize=9)
+    ax.axvline(0, color="k", lw=0.7)
+    ax.set_xlabel("Weight")
+    ax.legend(loc="lower right")
+    ax.set_title("1d  Taming the tangency portfolio")
+    ax.grid(axis="x", linestyle=":", alpha=0.5)
+    _save(fig, path)
 
 
 def summary(rets, rf) -> pd.DataFrame:
@@ -238,6 +366,60 @@ def main() -> None:
     corr = plot_1c(rets, rf, p1c)
     print(f"=== 1c  {p1c}")
     print(f"corr(first half, second half) = {corr:.2f}")
+
+    w_val = caps / caps.sum()
+    w_val.name = "value"
+    w_sh, delta, phi = shrunk(rets, rf)
+    books = {
+        "Value": (w_val, None),
+        "Equal 1/N": (pd.Series(1 / len(w_val), index=w_val.index), None),
+        "Tangency": (w_tan, tangency),
+        "Long-only tangency": (long_only(rets, rf), long_only),
+        "Shrunk tangency": (w_sh, lambda r, f: shrunk(r, f)[0]),
+    }
+    p1d = C.EXHIBITS / "1d_tamed.png"
+    plot_1d({k: w for k, (w, _) in books.items()}, p1d)
+    stats = book_stats(books, rets, rf)
+    weights = pd.DataFrame({k: w for k, (w, _) in books.items()})
+    weights.insert(0, "name", [C.NAMES[t] for t in weights.index])
+    weights = weights.sort_values("Value", ascending=False)
+    p1d_txt = C.EXHIBITS / "1d_tamed.txt"
+    p1d_txt.write_text(
+        "Exhibit 1d — taming the tangency portfolio (full sample)\n"
+        f"{rets.shape[1]} names, {rets.shape[0]} months  "
+        f"{rets.index[0]:%Y-%m} … {rets.index[-1]:%Y-%m}\n"
+        "Long-only: max Sharpe with w >= 0.  Shrunk: Bayes-Stein mean (Jorion 1986) "
+        "and Ledoit-Wolf (2004) covariance, shorts allowed.\n"
+        f"Ledoit-Wolf weight on identity target δ = {delta:.2f};  "
+        f"Bayes-Stein weight on min-variance mean φ = {phi:.2f}\n"
+        "sharpe_in is in-sample (flatters the optimized books).  "
+        "half_corr = corr of weights re-estimated on each 60-month half.\n\n"
+        + stats.round(3).to_string()
+        + "\n\nWeights\n\n"
+        + weights.round(3).to_string()
+        + "\n"
+    )
+    print(f"=== 1d  {p1d}")
+    print(f"=== 1d  {p1d_txt}")
+    print(f"δ = {delta:.2f}  φ = {phi:.2f}")
+    print(stats.round(3).to_string())
+
+    table_oos = oos(rets, rf, w_val)
+    p1e = C.EXHIBITS / "1e_oos.txt"
+    p1e.write_text(
+        "Exhibit 1e — out-of-sample test of the books\n"
+        "Each month, estimate on the trailing 60 months, hold the next month.\n"
+        f"{len(rets) - 60} out-of-sample months  "
+        f"{rets.index[60]:%Y-%m} … {rets.index[-1]:%Y-%m}\n"
+        "Excess returns over call money, annualized.  Value uses today's caps "
+        "throughout (look-ahead).\n"
+        "gross = sum |w|;  turnover = sum |w_t − w_{t−1}| per month "
+        "(ignores drift, so value and 1/N show 0).\n\n"
+        + table_oos.round(3).to_string()
+        + "\n"
+    )
+    print(f"=== 1e  {p1e}")
+    print(table_oos.round(3).to_string())
 
 
 if __name__ == "__main__":

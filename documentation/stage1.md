@@ -68,3 +68,36 @@ $$w\propto\Sigma^{-1}\mu_e,\qquad \sum_i w_i=1$$
 Same tangency recipe on Oct 2016–Sep 2021 and on Oct 2021–Sep 2026 (60 months each). Scatter: first-half weight vs second-half. Diagonal = same weight both times. Tickers on the points; ticker + name in the colour key.
 
 - Blue: long both · Green: short then long · Orange: long then short · Brown: short both
+
+## 1d — taming the tangency book
+
+`../exhibits/1d_tamed.txt` · `../exhibits/1d_tamed.png`
+
+Two fixes for the wild 1b weights, next to value, 1/N and the raw tangency.
+
+- **Long-only tangency.** Max Sharpe with no shorts, solved as min *y*′Σ̂*y* s.t. μ̂<sub>e</sub>′*y* = 1, *y* ≥ 0, then *w* = *y* / Σ*y* (scipy SLSQP).
+- **Shrunk tangency.** Shorts allowed, but both inputs shrunk. Mean: Bayes–Stein (Jorion 1986), pulled toward the minimum-variance portfolio's mean with weight φ. Covariance: Ledoit–Wolf (2004), pulled toward a scaled identity with weight δ.
+
+$$
+\hat\mu_{BS}=(1-\phi)\hat\mu+\phi\,\mu_0\mathbf 1,\qquad
+\phi=\frac{N+2}{(N+2)+T(\hat\mu-\mu_0\mathbf 1)'S^{-1}(\hat\mu-\mu_0\mathbf 1)},\qquad
+\hat\Sigma_{LW}=\delta\,m I+(1-\delta)S
+$$
+
+Full sample: δ = 0.11, φ = 0.54. Gross exposure falls from 3.8 (tangency) to 2.0 (shrunk) and 1.0 (long-only, 13 names held). Neither fix makes the weights stable: half-sample weight correlation is −0.17 (tangency), −0.26 (shrunk), −0.24 (long-only). In-sample Sharpe in the table flatters every optimized book.
+
+## 1e — out of sample
+
+`../exhibits/1e_oos.txt`
+
+Each month from Oct 2021, re-estimate every book on the trailing 60 months and hold it one month (60 out-of-sample months). Excess over call money, annualized.
+
+| Book | Sharpe | Avg gross | Monthly turnover |
+| --- | --- | --- | --- |
+| Value (today's caps) | 1.79 | 1.0 | — |
+| Equal 1/N | 1.80 | 1.0 | — |
+| Tangency | 0.03 | 5.7 (max 12.0) | 1.89 |
+| Long-only tangency | 1.06 | 1.0 | 0.29 |
+| Shrunk tangency | 0.80 | 2.1 | 0.38 |
+
+The ranking is the DeMiguel–Garlappi–Uppal (2009) one: the naive books win, the raw tangency is worthless out of sample, and the fixes recover part of the gap but not all. Caveat: value uses today's caps for every month, which is look-ahead (today's big names are yesterday's winners), so its edge over the optimized books is flattered. 1/N has no such problem and matches it.

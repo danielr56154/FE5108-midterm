@@ -1,0 +1,12 @@
+Exhibit 1e — out-of-sample test of the books
+Each month, estimate on the trailing 60 months, hold the next month.
+60 out-of-sample months  2021-10 … 2026-09
+Excess returns over call money, annualized.  Value uses today's caps throughout (look-ahead).
+gross = sum |w|;  turnover = sum |w_t − w_{t−1}| per month (ignores drift, so value and 1/N show 0).
+
+                      mean_ex    vol  sharpe  worst_month  avg_gross  max_gross  avg_turnover
+Value (today's caps)    0.298  0.167   1.788       -0.095      1.000      1.000         0.000
+Equal 1/N               0.250  0.139   1.804       -0.075      1.000      1.000         0.000
+Tangency                0.012  0.355   0.034       -0.289      5.655     11.998         1.892
+Long-only tangency      0.161  0.152   1.056       -0.104      1.000      1.000         0.289
+Shrunk tangency         0.138  0.172   0.804       -0.167      2.121      3.956         0.383

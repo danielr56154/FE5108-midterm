@@ -21,6 +21,8 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 - **1a** `[1a_summary.txt](exhibits/1a_summary.txt)` — mean, vol, Sharpe  
 - **1b** `[1b_weights.png](exhibits/1b_weights.png)` — tangency vs value weights  
 - **1c** `[1c_subsample.png](exhibits/1c_subsample.png)` — first-half vs second-half tangency  
+- **1d** `[1d_tamed.txt](exhibits/1d_tamed.txt)` / `[1d_tamed.png](exhibits/1d_tamed.png)` — long-only and shrunk tangency vs value, 1/N, raw tangency  
+- **1e** `[1e_oos.txt](exhibits/1e_oos.txt)` — rolling 60-month out-of-sample test of those books  
 - **2a** `[2a_capm.txt](exhibits/2a_capm.txt)` — CAPM β, α, *t*(α), R²  
 - **2b** `[2b_sml.png](exhibits/2b_sml.png)` — empirical SML  
 - **2c** `[2c_grs.txt](exhibits/2c_grs.txt)` — joint α = 0  
@@ -37,6 +39,5 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 
 Not computed.
 
-1. **Tamed book (Stage 1 / 4).** Long-only or shrunk tangency, so 1b is not only the wild unconstrained weights. FAQ asks us to show this; the Stage 4 memo needs a holdable “in between” book.
-2. **Sorted portfolios (Stage 3).** Run the factor regressions on characteristic buckets (e.g. 12–1 winner/loser books, or French Japan 25 size–B/M) instead of only the 30 names.
+1. **Sorted portfolios (Stage 3).** Run the factor regressions on characteristic buckets (e.g. 12–1 winner/loser books, or French Japan 25 size–B/M) instead of only the 30 names.
 

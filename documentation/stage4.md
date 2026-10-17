@@ -17,3 +17,5 @@ Stage 2 CAPM twice: TOPIX vs World-in-yen. One row per name (β̂, α̂, *t*(α�
 `../exhibits/4b_roll.png`
 
 The 4a alphas as bars. Blue = TOPIX, orange = World.
+
+**How much moves.** The bottom block of 4a summarises the shift from TOPIX to World: mean β 1.00 → 0.77 (lower for 28 of 30), cross-sectional corr of the two β vectors 0.93 (rank 0.95), mean R² 0.26 → 0.19, mean |Δα| 2.2 pp a year (max 6.6 pp, SoftBank Group). Alphas barely move because mean β × premium barely moves: 1.00 × 0.144 = 0.144 vs 0.77 × 0.178 = 0.138. Largest β falls are domestic names (Mitsubishi Electric, Mitsubishi Corp, Daiichi Sankyo); the only rises are global tech (LY, SoftBank Group, Recruit roughly flat).
