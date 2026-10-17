@@ -1,0 +1,11 @@
+Exhibit 3b (summary) — alphas across the three models
+30 names, 118 months  2016-10 … 2026-07
+alpha annualized; counts out of 30 names
+
+               alpha>0  |t|>2  mean_alpha  mean_abs_alpha
+model                                                    
+CAPM                25      3       0.077           0.084
++ SMB HML           26      3       0.080           0.092
++ SMB HML WML       26      6       0.084           0.094
+
+CAPM -> full: alpha up 14, down 10, same 6  (same = |change| < 0.5% a year)

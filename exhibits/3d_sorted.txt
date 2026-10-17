@@ -1,0 +1,18 @@
+Exhibit 3d — same three models on 12–1 sorted portfolios
+5 books, 118 months  2016-10 … 2026-07
+Each month the 78-name sort list is cut into 5 equal-weight books on the 12–1 return (P1 losers … P5 winners), held one month.
+mean_ex and α annualized; P5-P1 is the zero-cost spread, not in the GRS
+WML comes from the same sort list, so the full column is partly mechanical
+
+       mean_ex  a_capm  t_capm  a_ff3  t_ff3  a_full  t_full  b_wml
+book                                                               
+P1       0.181   0.025   0.709  0.024  0.685   0.078   4.152 -0.676
+P2       0.145   0.007   0.311  0.003  0.144   0.028   1.668 -0.313
+P3       0.173   0.034   1.663  0.026  1.283   0.033   1.638 -0.090
+P4       0.188   0.055   2.520  0.056  2.545   0.039   1.932  0.218
+P5       0.249   0.100   3.086  0.120  4.052   0.081   4.056  0.493
+P5-P1    0.068   0.075   1.361  0.096  1.751   0.003   0.197  1.168
+
+CAPM               GRS F(5, 112) = 5.42   p ≈ 0.000
++ SMB HML          GRS F(5, 110) = 6.51   p ≈ 0.000
++ SMB HML WML      GRS F(5, 109) = 5.68   p ≈ 0.000

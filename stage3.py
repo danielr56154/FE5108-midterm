@@ -1,6 +1,9 @@
 """Stage 3: French SMB/HML + homemade 12-1 WML.
 
     python stage3.py
+
+Exhibits: 3a factor construction and summary, 3b alphas (table, chart, summary,
+loadings), 3c verdict, 3d the same models on 12-1 sorted portfolios.
 """
 
 import io
@@ -69,10 +72,14 @@ def sort_prices() -> pd.DataFrame:
     return px.dropna(axis=1, how="all")
 
 
+def _mom_signal(r: pd.DataFrame) -> pd.DataFrame:
+    # 12-1: product of months t-12…t-2, formed at t-1, paid at t.
+    return np.expm1(np.log1p(r).rolling(11).sum()).shift(2)
+
+
 def wml(px: pd.DataFrame) -> pd.Series:
     r = px.pct_change()
-    # 12-1: product of months t-12…t-2, formed at t-1, paid at t.
-    sig = np.expm1(np.log1p(r).rolling(11).sum()).shift(2)
+    sig = _mom_signal(r)
     out = pd.Series(index=r.index, dtype=float, name="wml")
     for t in r.index:
         s, rt = sig.loc[t], r.loc[t]
@@ -87,6 +94,23 @@ def wml(px: pd.DataFrame) -> pd.Series:
     return out.dropna()
 
 
+def mom_sorts(px: pd.DataFrame, n: int = 5) -> pd.DataFrame:
+    """Equal-weight 12-1 buckets on the sort tape, same signal as wml. P1 = losers, Pn = winners."""
+    r = px.pct_change()
+    sig = _mom_signal(r)
+    cols = [f"P{i + 1}" for i in range(n)]
+    out = pd.DataFrame(index=r.index, columns=cols, dtype=float)
+    for t in r.index:
+        s, rt = sig.loc[t], r.loc[t]
+        ok = s.notna() & rt.notna()
+        s, rt = s[ok], rt[ok]
+        if len(s) < 20:
+            continue
+        bucket = pd.qcut(s.rank(method="first"), n, labels=cols)
+        out.loc[t] = rt.groupby(bucket, observed=True).mean()
+    return out.dropna()
+
+
 def ts_reg(excess, factors):
     T = len(excess)
     X = np.column_stack([np.ones(T), factors.values])
@@ -95,13 +119,17 @@ def ts_reg(excess, factors):
     e = y - X @ b
     k = factors.shape[1]
     s2 = (e ** 2).sum(axis=0) / (T - k - 1)
-    se_a = np.sqrt(s2 * np.linalg.inv(X.T @ X)[0, 0])
+    se = np.sqrt(np.outer(np.diag(np.linalg.inv(X.T @ X)), s2))
     alpha_m = b[0]
     out = pd.DataFrame({
-        "name": [C.NAMES[t] for t in excess.columns],
+        "name": [C.NAMES.get(t, t) for t in excess.columns],
         "alpha": alpha_m * 12,
-        "t_alpha": alpha_m / se_a,
+        "t_alpha": alpha_m / se[0],
     }, index=excess.columns)
+    for j, f in enumerate(factors.columns, start=1):
+        out[f"b_{f}"] = b[j]
+        out[f"t_{f}"] = b[j] / se[j]
+    out["r2"] = 1 - (e ** 2).sum(axis=0) / ((y - y.mean(axis=0)) ** 2).sum(axis=0)
     out.index.name = "ticker"
     return out, e, alpha_m, k
 
@@ -189,6 +217,11 @@ def main() -> None:
         cmp[f"t_{key}"] = tables[key]["t_alpha"]
     cmp = cmp.sort_values("t_capm", key=np.abs, ascending=False)
 
+    fsum = pd.DataFrame({
+        "mean": fac.mean() * 12,
+        "vol": fac.std() * np.sqrt(12),
+        "t_mean": fac.mean() / (fac.std() / np.sqrt(len(fac))),
+    })
     p3a = C.EXHIBITS / "3a_factors.txt"
     n_sort = px.shape[1]
     p3a.write_text(
@@ -210,7 +243,13 @@ def main() -> None:
         "is ranked on the 12–1 return — the product "
         "of monthly returns from t−12 through t−2, skipping t−1. Equal-weight top "
         "30% minus equal-weight bottom 30%, held one month. Here that yen spread "
-        "is the momentum factor in the same 30 regressions.\n"
+        "is the momentum factor in the same 30 regressions.\n\n"
+        "Factor summary (mean and vol annualized; mkt = TOPIX excess; "
+        "smb/hml from French in USD; wml homemade in JPY)\n\n"
+        + fsum.round(3).to_string()
+        + "\n\nCorrelations\n\n"
+        + fac.corr().round(2).to_string()
+        + "\n"
     )
     print(f"=== 3a  {p3a}")
 
@@ -227,6 +266,39 @@ def main() -> None:
     png = C.EXHIBITS / "3b_alphas.png"
     plot_3b(tables["capm"]["alpha"], tables["full"]["alpha"], png)
     print(f"=== 3b  {png}")
+
+    rows = []
+    for key, _, lab in models:
+        t = tables[key]
+        rows.append({"model": lab, "alpha>0": int((t["alpha"] > 0).sum()),
+                     "|t|>2": int((t["t_alpha"].abs() > 2).sum()),
+                     "mean_alpha": t["alpha"].mean(),
+                     "mean_abs_alpha": t["alpha"].abs().mean()})
+    summ = pd.DataFrame(rows).set_index("model")
+    d = tables["full"]["alpha"] - tables["capm"]["alpha"]
+    tol = 0.005
+    p3bs = C.EXHIBITS / "3b_summary.txt"
+    p3bs.write_text(
+        "Exhibit 3b (summary) — alphas across the three models\n"
+        f"{span}\n"
+        "alpha annualized; counts out of 30 names\n\n"
+        + summ.round(3).to_string()
+        + f"\n\nCAPM -> full: alpha up {int((d > tol).sum())}, down {int((d < -tol).sum())}, "
+        f"same {int((d.abs() <= tol).sum())}  (same = |change| < {tol:.1%} a year)\n"
+    )
+    print(f"=== 3b  {p3bs}")
+
+    load = tables["full"].drop(columns=["alpha", "t_alpha"])
+    load = load.sort_values("b_hml", ascending=False)
+    p3bl = C.EXHIBITS / "3b_loadings.txt"
+    p3bl.write_text(
+        "Exhibit 3b (loadings) — full-model factor betas\n"
+        f"{span}\n"
+        "b_* = loading, t_* = its t-stat, from Mkt+SMB+HML+WML; sorted by b_hml\n\n"
+        + load.round(2).to_string()
+        + "\n"
+    )
+    print(f"=== 3b  {p3bl}")
 
     def line(key, label):
         Fstat, p, d1, d2, _k = stats[key]
@@ -270,6 +342,38 @@ def main() -> None:
     print(f"=== 3c  {p3c}")
     for k, _, lab in models:
         print("   ", line(k, lab))
+
+    sorts = mom_sorts(px).reindex(excess.index).sub(rf, axis=0)
+    last = sorts.columns[-1]
+    spread = (sorts[last] - sorts["P1"]).rename(f"{last}-P1").to_frame()
+    books = pd.DataFrame({"mean_ex": pd.concat([sorts, spread], axis=1).mean() * 12})
+    grs_lines = []
+    for key, F, lab in models:
+        t_books, resid, alpha_m, _k = ts_reg(sorts, F)
+        both = pd.concat([t_books, ts_reg(spread, F)[0]])
+        books[f"a_{key}"] = both["alpha"]
+        books[f"t_{key}"] = both["t_alpha"]
+        Fstat, pval, d1, d2, _k = grs(alpha_m, resid, F.values)
+        grs_lines.append(f"{lab:18} GRS F({d1}, {d2}) = {Fstat:.2f}   p ≈ {pval:.3f}")
+    books["b_wml"] = both["b_wml"]
+    books.index.name = "book"
+    p3d = C.EXHIBITS / "3d_sorted.txt"
+    p3d.write_text(
+        "Exhibit 3d — same three models on 12–1 sorted portfolios\n"
+        f"{len(sorts.columns)} books, {len(sorts)} months  "
+        f"{sorts.index[0]:%Y-%m} … {sorts.index[-1]:%Y-%m}\n"
+        f"Each month the {n_sort}-name sort list is cut into {len(sorts.columns)} "
+        f"equal-weight books on the 12–1 return (P1 losers … {last} winners), held one month.\n"
+        f"mean_ex and α annualized; {last}-P1 is the zero-cost spread, not in the GRS\n"
+        "WML comes from the same sort list, so the full column is partly mechanical\n\n"
+        + books.round(3).to_string()
+        + "\n\n"
+        + "\n".join(grs_lines)
+        + "\n"
+    )
+    print(f"=== 3d  {p3d}")
+    for l in grs_lines:
+        print("   ", l)
 
 
 if __name__ == "__main__":
