@@ -53,7 +53,7 @@ $$
 \mathrm{GRS}=\frac{T-N-K}{N}\cdot\frac{\hat\alpha'\hat\Sigma^{-1}\hat\alpha}{1+\bar f^2/\hat\omega}\sim F_{N,\,T-N-K}
 $$
 
-Result: 3 of 30 names have |*t*| > 2 (Itochu, Tokio Marine, Advantest) vs ~1.5 expected by chance. GRS *F*(30, 89) = 1.54, *p* ≈ 0.06 — on the doorstep of 5%, not a clean joint reject. The 1.5 benchmark also assumes independent tests; the three banks are near-copies, so three loud *t*s are not three independent surprises.
+Result: 3 of 30 names have |*t*| > 2 (Itochu, Tokio Marine, Advantest) vs ~1.5 expected by chance. GRS *F*(30, 89) = 1.57, *p* ≈ 0.054 — still just above 5%, not a clean joint reject. The 1.5 benchmark also assumes independent tests; the three banks are near-copies, so three loud *t*s are not three independent surprises. Residual covariance in GRS is the MLE (÷ *T*); *p* is the exact *F* tail.
 
 ## 2d — fitted SML vs theory
 

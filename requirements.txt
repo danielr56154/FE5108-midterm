@@ -1,5 +1,5 @@
-numpy>=1.26
-pandas>=2.2
-matplotlib>=3.8
-yfinance>=0.2.40
-scipy>=1.11
+numpy==2.5.3
+pandas==3.0.6
+matplotlib==3.11.2
+yfinance==1.7.0
+scipy==1.18.1

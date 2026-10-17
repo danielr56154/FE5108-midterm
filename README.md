@@ -2,6 +2,10 @@
 
 Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[midterm_project_handout.pdf](midterm_project_handout.pdf)`.
 
+The universe is **today’s** Core 30 (JPX Oct 2025) backfilled ten years, so failed and delisted firms are missing. Average returns, Sharpes and CAPM alphas are biased up. Equal-weight (1/N) of these 30 names avoids using today’s market caps as weights; it does not undo survivorship.
+
+Python 3.11+. `pip install -r requirements.txt` then `python run_all.py`.
+
 ## Where to look
 
 
@@ -9,9 +13,28 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 | ---------------------------------- | --------------------------------------------------------------------------------------- |
 | `[exhibits/](exhibits/)`           | Every table and chart the report will use.                                              |
 | `[documentation/](documentation/)` | Documentation about what each stage actually did, and the data choices.                 |
-| `[data/](data/)`                   | Cached CSVs (prices, caps, call money, TOPIX, French Japan, WML sort tape, World + FX). |
-| `[config.py](config.py)`           | Tickers, dates, market tickers.                                                         |
-| `stage1.py` … `stage4.py`, `stage4_hybrid.py` | Code for that stage. `[run_all.py](run_all.py)` runs them in order. Needs `pip install -r requirements.txt` (Python 3.11+). |
+| `[data/](data/)`                   | Cached CSVs; one row per file below.                                                    |
+| `[config.py](config.py)`           | Tickers, `START`/`END`/`LAST`, market tickers.                                          |
+| `stage1.py` … `stage4.py`, `stage4_hybrid.py` | Code for that stage. `[run_all.py](run_all.py)` runs them in order.                     |
+
+## Packages
+
+Pinned in `[requirements.txt](requirements.txt)`: `numpy==2.5.3`, `pandas==3.0.6`, `matplotlib==3.11.2`, `yfinance==1.7.0`, `scipy==1.18.1`.
+
+## Data files
+
+Yahoo downloads use `start=2016-09-01` and exclusive `end=2026-10-01`, so the last complete month is Sep 2026. Cached files are reused if present.
+
+| File | Source |
+| --- | --- |
+| `[data/prices.csv](data/prices.csv)` | Yahoo Finance monthly adjusted close, 30 names |
+| `[data/caps.csv](data/caps.csv)` | Yahoo `fast_info.market_cap` (current yen caps, look-ahead) |
+| `[data/rf.csv](data/rf.csv)` | FRED `IRSTCI01JPM156N` yen overnight call, annual % / (100 × 12) |
+| `[data/mkt.csv](data/mkt.csv)` | Yahoo Daiwa TOPIX ETF `1305.T` monthly adjusted close |
+| `[data/ff_japan.csv](data/ff_japan.csv)` | Ken French Japan 3 Factors (USD); SMB and HML only |
+| `[data/sort_px.csv](data/sort_px.csv)` | Yahoo monthly adjusted close, 78 TSE names for homemade WML |
+| `[data/urth.csv](data/urth.csv)` | Yahoo iShares MSCI World ETF `URTH` (USD) |
+| `[data/fx.csv](data/fx.csv)` | Yahoo `JPY=X` (USDJPY), for unhedged World-in-yen |
 
 
 

@@ -7,6 +7,10 @@ DATA = ROOT / "data"
 EXHIBITS = ROOT / "exhibits"
 
 START = "2016-09-01"
+# yfinance `end` is exclusive. This keeps the last complete month at Sep 2026
+# so a mid-October rerun cannot pull a stub bar and break the 60-month OOS window.
+END = "2026-10-01"
+LAST = "2026-09-30"
 MIN_OBS = 96
 RF_URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id=IRSTCI01JPM156N"
 # Yahoo has no TOPIX index ticker; 1306.T (Nomura) has a 10x March-2026 glitch.

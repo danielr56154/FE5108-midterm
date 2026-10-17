@@ -3,8 +3,6 @@
     python stage2.py
 """
 
-import math
-
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.patheffects as pe
@@ -12,6 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from scipy.stats import f as f_dist
 
 import config as C
 import stage1
@@ -24,7 +23,7 @@ def market(idx) -> pd.Series:
     if path.exists():
         px = pd.read_csv(path, index_col=0, parse_dates=True).squeeze()
     else:
-        px = yf.download(C.MARKET, start=C.START, interval="1mo",
+        px = yf.download(C.MARKET, start=C.START, end=C.END, interval="1mo",
                          auto_adjust=True, progress=False)["Close"]
         px = px.squeeze().sort_index()
         px.name = "mkt"
@@ -59,22 +58,16 @@ def capm(excess, mkt_e):
 
 
 def grs(alpha_m, resid, f):
+    """GRS (1989): MLE residual covariance (÷ T) and exact F tail."""
     T, N = resid.shape
     K = 1
-    Sigma = resid.T @ resid / (T - K - 1)
+    Sigma = resid.T @ resid / T
     fbar = float(np.mean(f))
     omega = float(np.mean((f - fbar) ** 2))
     q = float(alpha_m @ np.linalg.solve(Sigma, alpha_m))
     stat = ((T - N - K) / N) * q / (1 + fbar ** 2 / omega)
-    p = _f_sf(stat, N, T - N - K)
+    p = float(f_dist.sf(stat, N, T - N - K))
     return stat, p, N, T - N - K
-
-
-def _f_sf(x, d1, d2):
-    x = max(float(x), 1e-18)
-    num = (1 - 2 / (9 * d2)) * x ** (1 / 3) - (1 - 2 / (9 * d1))
-    den = (2 / (9 * d1) + x ** (2 / 3) * 2 / (9 * d2)) ** 0.5
-    return 0.5 * math.erfc((num / den) / 2 ** 0.5)
 
 
 def sml_fit(beta, mu_e):

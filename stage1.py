@@ -31,7 +31,7 @@ def panel():
     if path.exists():
         px = pd.read_csv(path, index_col=0, parse_dates=True)
     else:
-        px = yf.download(C.TICKERS, start=C.START, interval="1mo",
+        px = yf.download(C.TICKERS, start=C.START, end=C.END, interval="1mo",
                          auto_adjust=True, progress=False)["Close"]
         px = px.sort_index()
         px.columns = [str(c) for c in px.columns]
@@ -67,7 +67,9 @@ def panel():
         caps = pd.Series(rows, dtype="float64", name="cap")
         caps.to_csv(path)
 
+    px = px.loc[px.index <= pd.Timestamp(C.LAST)]
     rets = px.pct_change().dropna(how="any")
+    rets = rets.loc[rets.index <= pd.Timestamp(C.LAST)]
     rf.index = rf.index.to_period("M")
     rf = rf.reindex(rets.index.to_period("M"))
     rf.index = rets.index

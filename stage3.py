@@ -16,6 +16,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import yfinance as yf
+from scipy.stats import f as f_dist
 
 import config as C
 import stage1
@@ -63,12 +64,13 @@ def sort_prices() -> pd.DataFrame:
     if path.exists():
         px = pd.read_csv(path, index_col=0, parse_dates=True)
     else:
-        px = yf.download(tickers, start=C.MOM_START, interval="1mo",
+        px = yf.download(tickers, start=C.MOM_START, end=C.END, interval="1mo",
                          auto_adjust=True, progress=False)["Close"]
         px = px.sort_index()
         px.columns = [str(c) for c in px.columns]
         px = px.dropna(axis=1, how="all")
         px.to_csv(path)
+    px = px.loc[px.index <= pd.Timestamp(C.LAST)]
     return px.dropna(axis=1, how="all")
 
 
@@ -140,13 +142,13 @@ def grs(alpha_m, resid, f):
     if f.ndim == 1:
         f = f.reshape(-1, 1)
     K = f.shape[1]
-    Sigma = resid.T @ resid / (T - K - 1)
+    Sigma = resid.T @ resid / T
     fbar = f.mean(axis=0)
     omega = (f - fbar).T @ (f - fbar) / T
     q = float(alpha_m @ np.linalg.solve(Sigma, alpha_m))
     shr = float(fbar @ np.linalg.solve(omega, fbar))
     stat = ((T - N - K) / N) * q / (1 + shr)
-    p = stage2._f_sf(stat, N, T - N - K)
+    p = float(f_dist.sf(stat, N, T - N - K))
     return stat, p, N, T - N - K, K
 
 

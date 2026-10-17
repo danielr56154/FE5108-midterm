@@ -31,7 +31,7 @@ plt.rcParams.update({"figure.dpi": 120, "savefig.bbox": "tight"})
 # ── Constants ─────────────────────────────────────────────────────────────────
 WINDOW   = 60
 LAMBDAS  = [0.10, 0.20, 0.30]
-TC_LIST  = [0, 5, 10, 20]         # one-way bps
+TC_LIST  = [0, 5, 10, 20]         # bps charged on two-way turnover Σ|Δw|
 
 STRATS = (
     ["EW", "VW*", "LO"]
@@ -138,12 +138,12 @@ def rolling_backtest(rets, rf, caps):
             w = w / w.sum()                    # numerical normalisation
             w_rec[s].loc[date] = w.values
 
-            # Turnover: one-way = Σ|w_new − w_drift| / 2
-            # First month: buying from cash (w_drift = 0), so one-way = 1.0
+            # Two-way turnover = Σ|w_new − w_drift|. Cost = bps × this.
+            # First month: buying from cash (w_drift = 0), so turnover = 1.0.
             if prev[s] is None:
                 to = 1.0
             else:
-                to = float((w - prev[s]).abs().sum()) / 2.0
+                to = float((w - prev[s]).abs().sum())
             to_rec[s].loc[date] = to
 
             r_p = float(w @ r_now)

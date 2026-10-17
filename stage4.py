@@ -26,7 +26,7 @@ def _monthly(s: pd.Series) -> pd.Series:
 def _px(ticker, path, name):
     if path.exists():
         return pd.read_csv(path, index_col=0, parse_dates=True).squeeze()
-    px = yf.download(ticker, start=C.START, interval="1mo",
+    px = yf.download(ticker, start=C.START, end=C.END, interval="1mo",
                      auto_adjust=True, progress=False)["Close"]
     px = px.squeeze().sort_index()
     px.name = name
@@ -89,8 +89,12 @@ def shift_summary(t_tab, w_tab, prem_t, prem_w) -> str:
         f"{bw.mean():.3f} × {prem_w:.3f} = {bw.mean() * prem_w:.3f}",
         "largest β falls:  " + ", ".join(
             f"{C.NAMES[t]} {bt[t]:.2f}→{bw[t]:.2f}" for t in db.nsmallest(3).index),
-        "largest β rises:  " + ", ".join(
-            f"{C.NAMES[t]} {bt[t]:.2f}→{bw[t]:.2f}" for t in db.nlargest(3).index),
+        "largest β rises:  " + (
+            ", ".join(
+                f"{C.NAMES[t]} {bt[t]:.2f}→{bw[t]:.2f}"
+                for t in db[db > 0].nlargest(3).index
+            ) or "none"
+        ),
     ]
     return "\n".join(lines) + "\n"
 

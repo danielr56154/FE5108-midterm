@@ -46,9 +46,9 @@ Count of |*t*(α̂)| > 2 and GRS (as in 2c) on each spec.
 
 | Model | loud names | GRS |
 | --- | --- | --- |
-| CAPM | 3 of 30 | *F*(30, 87) = 1.44, *p* ≈ 0.096 |
-| + SMB HML | 3 of 30 | *F*(30, 85) = 2.12, *p* ≈ 0.004 |
-| + SMB HML WML | 6 of 30 | *F*(30, 84) = 2.09, *p* ≈ 0.004 |
+| CAPM | 3 of 30 | *F*(30, 87) = 1.47, *p* ≈ 0.086 |
+| + SMB HML | 3 of 30 | *F*(30, 85) = 2.20, *p* ≈ 0.003 |
+| + SMB HML WML | 6 of 30 | *F*(30, 84) = 2.19, *p* ≈ 0.003 |
 
 CAPM |*t*| > 2: Tokio Marine, Itochu, Advantest. |*t*| ≤ 2 after SMB+HML: Tokio Marine, Itochu. Still |*t*| > 2 in the full model: Advantest, Itochu. Newly |*t*| > 2 in the full model: HOYA, Hitachi, Sony, Tokyo Electron.
 
@@ -60,8 +60,8 @@ Robustness. Each month the 78-name sort tape is cut into five equal-weight 12–
 
 | Model | P5−P1 α̂ | GRS (5 books) |
 | --- | --- | --- |
-| CAPM | 7.5%, *t* = 1.36 | *F*(5, 112) = 5.42, *p* < 0.001 |
-| + SMB HML | 9.6%, *t* = 1.75 | *F*(5, 110) = 6.51, *p* < 0.001 |
-| + SMB HML WML | 0.3%, *t* = 0.20 | *F*(5, 109) = 5.68, *p* < 0.001 |
+| CAPM | 7.5%, *t* = 1.36 | *F*(5, 112) = 5.51, *p* < 0.001 |
+| + SMB HML | 9.6%, *t* = 1.75 | *F*(5, 110) = 6.74, *p* < 0.001 |
+| + SMB HML WML | 0.3%, *t* = 0.20 | *F*(5, 109) = 5.93, *p* < 0.001 |
 
 WML closes the spread (partly mechanical, same tape), but every book keeps a positive α̂ and GRS rejects under all three specs. A long–short factor cannot price a level shared by every book.

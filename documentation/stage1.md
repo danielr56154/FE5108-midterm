@@ -4,7 +4,7 @@ Same 30 names throughout. Yen, monthly, Oct 2016 – Sep 2026 (120 return months
 
 ## Choices
 
-**Universe.** Today’s TOPIX Core 30 (JPX Oct 2025), not broad TOPIX. Dropped for thin history: Sony Financial (`8729.T`) and SoftBank Corp (`9434.T`). Added LY (`4689.T`) to keep *N* = 30.
+**Universe.** Today’s TOPIX Core 30 (JPX Oct 2025), not broad TOPIX. Dropped for thin history: Sony Financial (`8729.T`) and SoftBank Corp (`9434.T`). Added LY (`4689.T`) to keep *N* = 30. That is today’s members backfilled ten years: failed and delisted firms are missing, so average returns, Sharpes and CAPM alphas are biased up (survivorship). We do not have historical constituents.
 
 **Risk-free rate.** Yen overnight call money (FRED `IRSTCI01JPM156N`). NIRP negatives kept.
 
@@ -100,4 +100,4 @@ Each month from Oct 2021, re-estimate every book on the trailing 60 months and h
 | Long-only tangency | 1.06 | 1.0 | 0.29 |
 | Shrunk tangency | 0.80 | 2.1 | 0.38 |
 
-The ranking is the DeMiguel–Garlappi–Uppal (2009) one: the naive books win, the raw tangency is worthless out of sample, and the fixes recover part of the gap but not all. Caveat: value uses today's caps for every month, which is look-ahead (today's big names are yesterday's winners), so its edge over the optimized books is flattered. 1/N has no such problem and matches it.
+The ranking is the DeMiguel–Garlappi–Uppal (2009) one: the naive books win, the raw tangency is worthless out of sample, and the fixes recover part of the gap but not all. Caveat: value uses today's caps for every month, which is look-ahead (today's big names are yesterday's winners), so its Sharpe is flattered relative to the optimized books. 1/N avoids that cap look-ahead and still matches it. 1/N does **not** avoid survivorship: it is equal-weight of the same 2025 Core 30, so failed names are still missing.
