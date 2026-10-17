@@ -68,6 +68,33 @@ def plot_4b(a0, a1, path):
     stage1._save(fig, path)
 
 
+def shift_summary(t_tab, w_tab, prem_t, prem_w) -> str:
+    """How far betas, R² and alphas move when the proxy changes."""
+    bt, bw = t_tab["beta"], w_tab["beta"]
+    da = (w_tab["alpha"] - t_tab["alpha"]).abs()
+    db = bw - bt
+    big = da.idxmax()
+    n = len(bt)
+    lines = [
+        "How much moves (TOPIX → world)",
+        f"mean β            {bt.mean():.3f} → {bw.mean():.3f}   "
+        f"lower under world: {int((bw < bt).sum())} of {n}",
+        f"corr(β_topix, β_world) = {bt.corr(bw):.2f}   "
+        f"rank corr = {bt.rank().corr(bw.rank()):.2f}",
+        f"mean R²           {t_tab['r2'].mean():.3f} → {w_tab['r2'].mean():.3f}   "
+        f"lower under world: {int((w_tab['r2'] < t_tab['r2']).sum())} of {n}",
+        f"mean |Δα|         {da.mean():.3f}   max {da.max():.3f}  "
+        f"{C.NAMES[big]} ({big.replace('.T', '')})",
+        f"mean β × premium  {bt.mean():.3f} × {prem_t:.3f} = {bt.mean() * prem_t:.3f}   vs   "
+        f"{bw.mean():.3f} × {prem_w:.3f} = {bw.mean() * prem_w:.3f}",
+        "largest β falls:  " + ", ".join(
+            f"{C.NAMES[t]} {bt[t]:.2f}→{bw[t]:.2f}" for t in db.nsmallest(3).index),
+        "largest β rises:  " + ", ".join(
+            f"{C.NAMES[t]} {bt[t]:.2f}→{bw[t]:.2f}" for t in db.nlargest(3).index),
+    ]
+    return "\n".join(lines) + "\n"
+
+
 def _loud(t):
     return [f"{C.NAMES[i]} ({i.replace('.T', '')})"
             for i in t.index[t.abs() > 2]]
@@ -115,6 +142,7 @@ def main() -> None:
 
     t_l, w_l = set(_loud(t_tab["t_alpha"])), set(_loud(w_tab["t_alpha"]))
     corr = float(topix_e.corr(world_e))
+    move = shift_summary(t_tab, w_tab, topix_e.mean() * 12, world_e.mean() * 12)
     p4a = C.EXHIBITS / "4a_roll.txt"
     p4a.write_text(
         "Exhibit 4a — CAPM under two market proxies\n"
@@ -130,11 +158,13 @@ def main() -> None:
         + line("MSCI World", w_tab, w_grs) + "\n\n"
         f"Loud both:        {_join(sorted(t_l & w_l))}\n"
         f"Loud only TOPIX:  {_join(sorted(t_l - w_l))}\n"
-        f"Loud only world:  {_join(sorted(w_l - t_l))}\n"
+        f"Loud only world:  {_join(sorted(w_l - t_l))}\n\n"
+        + move
     )
     print(f"=== 4a  {p4a}")
     print("   ", line("TOPIX", t_tab, t_grs))
     print("   ", line("MSCI World", w_tab, w_grs))
+    print(move)
 
     png = C.EXHIBITS / "4b_roll.png"
     plot_4b(t_tab["alpha"], w_tab["alpha"], png)

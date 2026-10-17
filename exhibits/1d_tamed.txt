@@ -1,0 +1,46 @@
+Exhibit 1d — taming the tangency portfolio (full sample)
+30 names, 120 months  2016-10 … 2026-09
+Long-only: max Sharpe with w >= 0.  Shrunk: Bayes-Stein mean (Jorion 1986) and Ledoit-Wolf (2004) covariance, shorts allowed.
+Ledoit-Wolf weight on identity target δ = 0.11;  Bayes-Stein weight on min-variance mean φ = 0.54
+sharpe_in is in-sample (flatters the optimized books).  half_corr = corr of weights re-estimated on each 60-month half.
+
+                    sharpe_in  gross  max_w  min_w  n_short  n_held  half_corr
+Value                   1.527  1.000  0.081  0.007      0.0    30.0        NaN
+Equal 1/N               1.533  1.000  0.033  0.033      0.0    30.0        NaN
+Tangency                2.413  3.804  0.411 -0.323     10.0    30.0     -0.169
+Long-only tangency      1.889  1.000  0.211  0.000      0.0    13.0     -0.235
+Shrunk tangency         2.161  1.987  0.178 -0.098     10.0    30.0     -0.255
+
+Weights
+
+                       name  Value  Equal 1/N  Tangency  Long-only tangency  Shrunk tangency
+8306.T                 MUFG  0.081      0.033    -0.323               0.000           -0.074
+9984.T       SoftBank Group  0.071      0.033     0.024               0.000            0.026
+7203.T               Toyota  0.071      0.033    -0.243               0.000           -0.098
+8316.T                 SMFG  0.051      0.033     0.243               0.000            0.080
+6501.T              Hitachi  0.049      0.033    -0.039               0.000           -0.005
+8035.T       Tokyo Electron  0.048      0.033     0.106               0.045            0.053
+6098.T              Recruit  0.048      0.033     0.009               0.034           -0.016
+6857.T            Advantest  0.046      0.033     0.051               0.056            0.016
+6758.T                 Sony  0.043      0.033     0.070               0.040            0.043
+9983.T       Fast Retailing  0.041      0.033     0.030               0.000            0.009
+8411.T               Mizuho  0.041      0.033     0.305               0.091            0.150
+6861.T              Keyence  0.037      0.033     0.092               0.000            0.064
+8058.T      Mitsubishi Corp  0.036      0.033     0.086               0.000            0.046
+8001.T               Itochu  0.032      0.033     0.411               0.211            0.157
+8766.T         Tokio Marine  0.031      0.033     0.309               0.196            0.178
+8031.T               Mitsui  0.029      0.033     0.072               0.013            0.050
+9432.T                  NTT  0.028      0.033     0.161               0.050            0.126
+7011.T                  MHI  0.026      0.033    -0.014               0.000           -0.010
+2914.T        Japan Tobacco  0.024      0.033     0.007               0.000            0.072
+9433.T                 KDDI  0.022      0.033     0.157               0.142            0.135
+4063.T            Shin-Etsu  0.021      0.033    -0.124               0.000           -0.048
+6503.T  Mitsubishi Electric  0.021      0.033    -0.160               0.000           -0.098
+7974.T             Nintendo  0.019      0.033     0.017               0.027            0.038
+4502.T               Takeda  0.019      0.033    -0.088               0.000           -0.022
+7741.T                 HOYA  0.015      0.033     0.173               0.081            0.131
+7267.T                Honda  0.013      0.033    -0.125               0.000           -0.076
+6367.T               Daikin  0.011      0.033    -0.218               0.000           -0.047
+4568.T       Daiichi Sankyo  0.011      0.033     0.044               0.014            0.028
+3382.T            Seven & i  0.009      0.033    -0.068               0.000            0.044
+4689.T           LY (Yahoo)  0.007      0.033     0.036               0.000            0.049

@@ -21,6 +21,8 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 - **1a** `[1a_summary.txt](exhibits/1a_summary.txt)` — mean, vol, Sharpe  
 - **1b** `[1b_weights.png](exhibits/1b_weights.png)` — tangency vs value weights  
 - **1c** `[1c_subsample.png](exhibits/1c_subsample.png)` — first-half vs second-half tangency  
+- **1d** `[1d_tamed.txt](exhibits/1d_tamed.txt)` / `[1d_tamed.png](exhibits/1d_tamed.png)` — long-only and shrunk tangency vs value, 1/N, raw tangency  
+- **1e** `[1e_oos.txt](exhibits/1e_oos.txt)` — rolling 60-month out-of-sample test of those books  
 - **2a** `[2a_capm.txt](exhibits/2a_capm.txt)` — CAPM β, α, *t*(α), R²  
 - **2b** `[2b_sml.png](exhibits/2b_sml.png)` — empirical SML  
 - **2c** `[2c_grs.txt](exhibits/2c_grs.txt)` — joint α = 0  
@@ -33,12 +35,3 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 - **4a** `[4a_roll.txt](exhibits/4a_roll.txt)` — TOPIX vs World-in-yen CAPM  
 - **4b** `[4b_roll.png](exhibits/4b_roll.png)` — those alphas as bars  
 - **4.1** `[4_hybrid_stats.csv](exhibits/4_hybrid_stats.csv)` / `[4_hybrid_costs.csv](exhibits/4_hybrid_costs.csv)` / `[4_hybrid_performance.png](exhibits/4_hybrid_performance.png)` / `[4_hybrid_sharpe.png](exhibits/4_hybrid_sharpe.png)` — rolling 60-month out-of-sample backtest of EW, VW, long-only tangency and EW/VW + 10–30% LO hybrids (`stage4_hybrid.py`); monthly returns and weights in `4_hybrid_monthly.csv`, `4_hybrid_weights.csv`
-
-
-
-## Still open
-
-Not computed.
-
-1. **Tamed book (Stage 1 / 4).** Long-only or shrunk tangency, so 1b is not only the wild unconstrained weights. FAQ asks us to show this; the Stage 4 memo needs a holdable “in between” book.
-
