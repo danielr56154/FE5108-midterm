@@ -11,7 +11,7 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 | `[documentation/](documentation/)` | Documentation about what each stage actually did, and the data choices.                 |
 | `[data/](data/)`                   | Cached CSVs (prices, caps, call money, TOPIX, French Japan, WML sort tape, World + FX). |
 | `[config.py](config.py)`           | Tickers, dates, market tickers.                                                         |
-| `stage1.py` … `stage4.py`          | Code for that stage. `[run_all.py](run_all.py)` runs them in order.                     |
+| `stage1.py` … `stage4.py`, `stage4_hybrid.py` | Code for that stage. `[run_all.py](run_all.py)` runs them in order. Needs `pip install -r requirements.txt` (Python 3.11+). |
 
 
 
@@ -31,7 +31,8 @@ Japan TOPIX Core 30, yen, monthly, Oct 2016 – Sep 2026. Assignment and FAQ: `[
 - **3b** `[3b_summary.txt](exhibits/3b_summary.txt)` — alpha counts per model · `[3b_loadings.txt](exhibits/3b_loadings.txt)` — full-model factor loadings  
 - **3d** `[3d_sorted.txt](exhibits/3d_sorted.txt)` — same models on 12–1 sorted portfolios  
 - **4a** `[4a_roll.txt](exhibits/4a_roll.txt)` — TOPIX vs World-in-yen CAPM  
-- **4b** `[4b_roll.png](exhibits/4b_roll.png)` — those alphas as bars
+- **4b** `[4b_roll.png](exhibits/4b_roll.png)` — those alphas as bars  
+- **4.1** `[4_hybrid_stats.csv](exhibits/4_hybrid_stats.csv)` / `[4_hybrid_costs.csv](exhibits/4_hybrid_costs.csv)` / `[4_hybrid_performance.png](exhibits/4_hybrid_performance.png)` / `[4_hybrid_sharpe.png](exhibits/4_hybrid_sharpe.png)` — rolling 60-month out-of-sample backtest of EW, VW, long-only tangency and EW/VW + 10–30% LO hybrids (`stage4_hybrid.py`); monthly returns and weights in `4_hybrid_monthly.csv`, `4_hybrid_weights.csv`
 
 
 

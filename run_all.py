@@ -4,6 +4,7 @@ import stage1
 import stage2
 import stage3
 import stage4
+import stage4_hybrid
 
 
 def main():
@@ -11,6 +12,7 @@ def main():
     stage2.main()
     stage3.main()
     stage4.main()
+    stage4_hybrid.main()
 
 
 if __name__ == "__main__":
